@@ -91,7 +91,7 @@ const AUTHORS = [
 
 const AFFILIATIONS = [
   { id: '1', text: 'School of Computer Science and Technology, Beijing Institute of Technology' },
-  { id: '2', text: 'HKUST'}
+  { id: '2', text: 'The Hong Kong University of Science and Technology (HKUST)'}
 ]
 {/* ================================================================ */}
 
