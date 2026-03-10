@@ -117,7 +117,7 @@ function Hero() {
         </h1>
 
         <p className="text-base text-white/60 mb-8">
-          IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS) 2026
+          Submitted to IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS) 2026
         </p>
 
         {/* ---------- Author list ---------- */}
