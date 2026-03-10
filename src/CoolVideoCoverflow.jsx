@@ -40,7 +40,7 @@ function getCardTransform(offset) {
   }
 
   return {
-    scale: Math.max(0.45, 0.66 - (abs - 1) * 0.1),
+    scale: Math.max(0.40, 0.66 - (abs - 1) * 0.1),
     rotateY: -sign * Math.min(abs * 30, 55),
     opacity: Math.max(0.2, 0.85 - abs * 0.2),
   }
