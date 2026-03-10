@@ -97,7 +97,7 @@ function Hero() {
       {/* Background video */}
       <video
         className="absolute inset-0 w-full h-full object-cover"
-        src="https://www.w3schools.com/html/mov_bbb.mp4"
+        src={`${import.meta.env.BASE_URL}videos_rw/main_web.mp4`}
         autoPlay
         loop
         muted
