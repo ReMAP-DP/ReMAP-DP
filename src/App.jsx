@@ -1,6 +1,7 @@
 import { useState } from 'react'
+import SimulationGallery from './SimulationGallery'
 
-const NAV_ITEMS = ['Abstract', 'Results', 'BibTeX']
+const NAV_ITEMS = ['Abstract', 'Simulation', 'Results', 'BibTeX']
 
 function Navbar() {
   const [open, setOpen] = useState(false)
