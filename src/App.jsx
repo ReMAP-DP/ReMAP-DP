@@ -128,7 +128,7 @@ function Hero() {
             <span key={i} className="font-medium">
               {a.name}
               {a.superscript && <sup className="text-xs ml-0.5">{a.superscript}</sup>}
-              {a.equalContribution && <sup className="text-xs ml-0.5">*</sup>}
+              {/* {a.equalContribution && <sup className="text-xs ml-0.5">*</sup>} */}
               {a.corresponding && <sup className="text-xs ml-0.5">&dagger;</sup>}
             </span>
           ))}
