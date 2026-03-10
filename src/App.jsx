@@ -506,6 +506,7 @@ function App() {
         <Hero />
         <Abstract />
         <CoolVideoCoverflow />
+        <RealWorldGallery />
         <Results />
         <BibTeX />
       </main>
