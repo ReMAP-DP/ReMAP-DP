@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import CoolVideoCoverflow from './CoolVideoCoverflow'
+import RealWorldGallery from './RealWorldGallery'
 
-const NAV_ITEMS = ['Abstract', 'Simulation', 'Results', 'BibTeX']
+const NAV_ITEMS = ['Abstract', 'Simulation', 'Real-World', 'Results', 'BibTeX']
 
 function Navbar() {
   const [open, setOpen] = useState(false)
