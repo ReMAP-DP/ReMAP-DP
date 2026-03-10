@@ -80,8 +80,8 @@ const AUTHORS = [
   // { name: 'First Last', superscript: '1' },
   { name: 'XinZhang Yang', superscript: '1' },
   { name: 'Renjun Wu', superscript: '1' },
-  { name: 'Xuesong Li', superscript: '1' },
   { name: 'Jinyan Liu', superscript: '1' },
+  { name: 'Xuesong Li', superscript: '1' },
 ]
 
 const AFFILIATIONS = [
