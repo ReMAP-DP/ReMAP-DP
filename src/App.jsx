@@ -82,13 +82,14 @@ const AUTHORS = [
   // { name: 'First Last', superscript: '1' },
   { name: 'XinZhang Yang', superscript: '1' },
   { name: 'Renjun Wu', superscript: '1' },
-  { name: 'Hellen Ma', superscript: '1' },
+  { name: 'Hellen Ma', superscript: '2' },
   { name: 'Jinyan Liu', superscript: '1' },
   { name: 'Xuesong Li', superscript: '1' },
 ]
 
 const AFFILIATIONS = [
   { id: '1', text: 'School of Computer Science and Technology, Beijing Institute of Technology' },
+  { id: '2', text: 'HKUST'}
 ]
 {/* ================================================================ */}
 
