@@ -82,11 +82,11 @@ function SectionHeading({ children }) {
    ================================================================ */}
 const AUTHORS = [
   // { name: 'First Last', superscript: '1' },
-  { name: 'XinZhang Yang', superscript: '1', corresponding: true  },
-  { name: 'Renjun Wu', superscript: '1', corresponding: true  },
-  { name: 'Hellen Ma', superscript: '2' , corresponding: true },
-  { name: 'Jinyan Liu', superscript: '1' , corresponding: true },
-  { name: 'Xuesong Li', superscript: '1', corresponding: true },
+  { name: 'XinZhang Yang', superscript: '1', corresponding: true, equalContribution: true  },
+  { name: 'Renjun Wu', superscript: '1', corresponding: true, equalContribution: true  },
+  { name: 'Hellen Ma', superscript: '2' , corresponding: true, equalContribution: true },
+  { name: 'Jinyan Liu', superscript: '1' , corresponding: true, equalContribution: true },
+  { name: 'Xuesong Li', superscript: '1', corresponding: true, equalContribution: true },
 ]
 
 const AFFILIATIONS = [
