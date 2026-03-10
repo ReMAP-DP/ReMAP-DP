@@ -18,8 +18,9 @@ async function loadBinPointCloud(url) {
   const positions = new Float32Array(count * 3)
   const colors = new Float32Array(count * 3)
   for (let i = 0; i < count; i++) {
+    // Remap: X stays, negate Y so "up" in robot frame renders up in Three.js, Z stays
     positions[i * 3] = raw[i * 6]
-    positions[i * 3 + 1] = raw[i * 6 + 1]
+    positions[i * 3 + 1] = -raw[i * 6 + 1]
     positions[i * 3 + 2] = raw[i * 6 + 2]
     colors[i * 3] = raw[i * 6 + 3]
     colors[i * 3 + 1] = raw[i * 6 + 4]
@@ -282,7 +283,10 @@ export default function InteractiveProjectionDemo() {
   const handlePM = useCallback((src) => setPmSrc(src), [])
 
   return (
-    <section id="demo" className="py-16 bg-gray-900">
+    <section id="demo" className="relative pt-16 pb-16 bg-gray-900">
+      {/* Top gradient: white → dark */}
+      <div className="absolute top-0 inset-x-0 h-24 bg-gradient-to-b from-white to-transparent pointer-events-none" />
+
       <div className="max-w-5xl mx-auto px-6">
         <h2 className="text-2xl font-bold text-white mb-2 pb-2 border-b border-gray-700">
           Interactive Reprojection Demo
@@ -297,7 +301,7 @@ export default function InteractiveProjectionDemo() {
         >
           {/* 3D Canvas */}
           <Canvas
-            camera={{ position: [0.8, 0.5, 1.0], fov: 50, near: 0.01, far: 100 }}
+            camera={{ position: [0.8, -0.3, 1.2], fov: 50, near: 0.01, far: 100 }}
             gl={{ antialias: true, preserveDrawingBuffer: true }}
             dpr={[1, 1.5]}
           >
@@ -310,7 +314,7 @@ export default function InteractiveProjectionDemo() {
               />
             </Suspense>
             <OrbitControls
-              target={[0, 0.1, 0.45]}
+              target={[0, -0.1, 0.45]}
               enableDamping
               dampingFactor={0.12}
               minDistance={0.3}

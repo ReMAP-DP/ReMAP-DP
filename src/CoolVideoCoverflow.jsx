@@ -124,8 +124,8 @@ export default function CoolVideoCoverflow() {
 
   return (
     <section id="simulation" className="relative pt-20 pb-10 sm:pt-28 sm:pb-14 bg-gray-900 overflow-hidden select-none">
-      {/* Top gradient: white -> dark */}
-      <div className="absolute top-0 inset-x-0 h-24 bg-gradient-to-b from-white to-transparent pointer-events-none" />
+      {/* Top gradient: smooth transition from previous dark section */}
+      <div className="absolute top-0 inset-x-0 h-px bg-gray-800 pointer-events-none" />
       {/* Heading */}
       <div className="max-w-5xl mx-auto px-6 mb-12 sm:mb-16">
         <h2 className="text-2xl sm:text-3xl font-bold text-white mb-3">
