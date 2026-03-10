@@ -1,5 +1,5 @@
-import { useState, useRef, useEffect, useCallback, useMemo } from 'react'
-import { motion, useAnimation } from 'framer-motion'
+import { useState, useRef, useEffect, useCallback } from 'react'
+import { motion, animate } from 'framer-motion'
 
 /* ================================================================
    VIDEO DATA
@@ -25,95 +25,217 @@ function parseTitle(filename) {
 }
 
 /* ================================================================
-   LAYOUT CONFIG
+   CONFIG
    ================================================================ */
-const CARD_WIDTH = 320
-const CARD_GAP = 24
-const SPRING = { type: 'spring', stiffness: 300, damping: 30 }
+const CARD_W = 420        // card width in px
+const CARD_GAP = 60       // space between card centers beyond CARD_W
+const SPRING = { type: 'spring', stiffness: 260, damping: 28 }
 
-/* ================================================================
-   3D TRANSFORM HELPERS
-   ================================================================ */
-function getCardStyle(offset) {
-  // offset: distance from center in card-units (0 = focused)
-  const absOffset = Math.abs(offset)
+function getCardTransform(offset) {
+  const abs = Math.abs(offset)
   const sign = Math.sign(offset)
 
-  if (absOffset < 0.01) {
-    return { scale: 1.15, rotateY: 0, z: 50, opacity: 1, x: 0 }
+  if (abs < 0.01) {
+    return { scale: 1.08, rotateY: 0, translateZ: 0, opacity: 1 }
   }
 
-  const scale = Math.max(0.6, 1.15 - absOffset * 0.18)
-  const rotateY = sign * Math.min(absOffset * 25, 45)
-  const z = -absOffset * 80
-  const opacity = Math.max(0.3, 1 - absOffset * 0.22)
-  const x = 0
-
-  return { scale, rotateY, z, opacity, x }
+  return {
+    scale: Math.max(0.55, 1.08 - abs * 0.16),
+    rotateY: -sign * Math.min(abs * 28, 50),
+    translateZ: -abs * 120,
+    opacity: Math.max(0.25, 1 - abs * 0.25),
+  }
 }
 
 /* ================================================================
-   SINGLE CARD
+   COMPONENT
    ================================================================ */
-function CoverflowCard({ filename, index, focusedIndex, onClick, videoRefs }) {
-  const offset = index - focusedIndex
-  const isFocused = Math.abs(offset) < 0.5
-  const style = getCardStyle(offset)
+export default function CoolVideoCoverflow() {
+  const [focused, setFocused] = useState(0)
+  const videoRefs = useRef([])
+  const containerRef = useRef(null)
+  const isDragging = useRef(false)
+  const dragStartX = useRef(0)
+  const dragStartFocused = useRef(0)
+  const count = VIDEO_FILES.length
   const base = import.meta.env.BASE_URL
-  const title = parseTitle(filename)
+
+  const goTo = useCallback(
+    (i) => setFocused(Math.max(0, Math.min(count - 1, i))),
+    [count],
+  )
+
+  // Video playback: only focused plays
+  useEffect(() => {
+    videoRefs.current.forEach((v, i) => {
+      if (!v) return
+      if (i === focused) {
+        v.play().catch(() => {})
+      } else {
+        v.pause()
+        v.currentTime = 0
+      }
+    })
+  }, [focused])
+
+  // Keyboard
+  useEffect(() => {
+    const handler = (e) => {
+      if (e.key === 'ArrowLeft') goTo(focused - 1)
+      if (e.key === 'ArrowRight') goTo(focused + 1)
+    }
+    window.addEventListener('keydown', handler)
+    return () => window.removeEventListener('keydown', handler)
+  }, [focused, goTo])
+
+  // Drag handlers (pointer events for touch + mouse)
+  const onPointerDown = useCallback(
+    (e) => {
+      isDragging.current = false
+      dragStartX.current = e.clientX
+      dragStartFocused.current = focused
+      containerRef.current?.setPointerCapture(e.pointerId)
+    },
+    [focused],
+  )
+
+  const onPointerMove = useCallback((e) => {
+    const dx = e.clientX - dragStartX.current
+    if (Math.abs(dx) > 8) isDragging.current = true
+  }, [])
+
+  const onPointerUp = useCallback(
+    (e) => {
+      const dx = e.clientX - dragStartX.current
+      containerRef.current?.releasePointerCapture(e.pointerId)
+
+      if (Math.abs(dx) < 8) return // was a click, not drag
+
+      const cardStep = CARD_W * 0.45 // px dragged to shift one card
+      const shift = Math.round(-dx / cardStep)
+      goTo(dragStartFocused.current + shift)
+    },
+    [goTo],
+  )
+
+  const handleCardClick = useCallback(
+    (i) => {
+      if (!isDragging.current) goTo(i)
+    },
+    [goTo],
+  )
 
   return (
-    <motion.div
-      className="flex-shrink-0 cursor-pointer select-none"
-      style={{
-        width: CARD_WIDTH,
-        perspective: 1200,
-        zIndex: 100 - Math.round(Math.abs(offset) * 10),
-      }}
-      onClick={() => onClick(index)}
-      animate={{
-        scale: style.scale,
-        opacity: style.opacity,
-        rotateY: style.rotateY,
-        z: style.z,
-      }}
-      transition={SPRING}
-    >
+    <section id="simulation" className="relative py-20 sm:py-28 bg-neutral-950 overflow-hidden select-none">
+      {/* Heading */}
+      <div className="max-w-5xl mx-auto px-6 mb-12 sm:mb-16">
+        <h2 className="text-2xl sm:text-3xl font-bold text-white mb-3">
+          Simulation Tasks
+        </h2>
+        <p className="text-neutral-400 text-sm sm:text-base">
+          10 manipulation tasks from the RoboTwin 2.0 benchmark — drag or click to explore.
+        </p>
+      </div>
+
+      {/* Viewport */}
       <div
-        className={`rounded-2xl overflow-hidden transition-shadow duration-500
-          ${isFocused
-            ? 'shadow-[0_20px_60px_-10px_rgba(59,130,246,0.3)]'
-            : 'shadow-lg shadow-black/40'
-          }`}
+        ref={containerRef}
+        className="relative w-full overflow-hidden touch-pan-y"
+        style={{ height: 340 }}
+        onPointerDown={onPointerDown}
+        onPointerMove={onPointerMove}
+        onPointerUp={onPointerUp}
       >
-        <div className="aspect-video bg-neutral-900 overflow-hidden">
-          <video
-            ref={(el) => { videoRefs.current[index] = el }}
-            className="w-full h-full object-cover"
-            src={`${base}videos/${filename}`}
-            preload="metadata"
-            muted
-            loop
-            playsInline
-          />
+        {/* Gradient edges */}
+        <div className="absolute inset-y-0 left-0 w-20 sm:w-36 bg-gradient-to-r from-neutral-950 to-transparent z-20 pointer-events-none" />
+        <div className="absolute inset-y-0 right-0 w-20 sm:w-36 bg-gradient-to-l from-neutral-950 to-transparent z-20 pointer-events-none" />
+
+        {/* Arrow buttons */}
+        <ArrowBtn dir="left" onClick={() => goTo(focused - 1)} disabled={focused === 0} />
+        <ArrowBtn dir="right" onClick={() => goTo(focused + 1)} disabled={focused === count - 1} />
+
+        {/* Cards — each absolutely centered, offset by (index - focused) */}
+        <div className="relative w-full h-full" style={{ perspective: 1400 }}>
+          {VIDEO_FILES.map((file, i) => {
+            const offset = i - focused
+            const t = getCardTransform(offset)
+            const x = offset * (CARD_W + CARD_GAP)
+            const zIdx = 100 - Math.round(Math.abs(offset) * 10)
+
+            return (
+              <motion.div
+                key={file}
+                className="absolute top-0 cursor-pointer"
+                style={{
+                  width: CARD_W,
+                  left: '50%',
+                  marginLeft: -(CARD_W / 2),
+                  transformStyle: 'preserve-3d',
+                  zIndex: zIdx,
+                }}
+                animate={{
+                  x,
+                  scale: t.scale,
+                  rotateY: t.rotateY,
+                  opacity: t.opacity,
+                }}
+                transition={SPRING}
+                onClick={() => handleCardClick(i)}
+              >
+                <div
+                  className={`rounded-2xl overflow-hidden transition-shadow duration-500
+                    ${Math.abs(offset) < 0.5
+                      ? 'shadow-[0_16px_50px_-8px_rgba(59,130,246,0.35)]'
+                      : 'shadow-lg shadow-black/50'
+                    }`}
+                >
+                  <div className="aspect-video bg-neutral-900">
+                    <video
+                      ref={(el) => { videoRefs.current[i] = el }}
+                      className="w-full h-full object-cover"
+                      src={`${base}videos/${file}`}
+                      preload="metadata"
+                      muted
+                      loop
+                      playsInline
+                    />
+                  </div>
+                </div>
+
+                {/* Title */}
+                <motion.p
+                  className="text-center mt-3 text-sm font-medium text-white/90 tracking-wide pointer-events-none"
+                  animate={{
+                    opacity: Math.abs(offset) < 0.5 ? 1 : 0,
+                    y: Math.abs(offset) < 0.5 ? 0 : 8,
+                  }}
+                  transition={{ duration: 0.3 }}
+                >
+                  {parseTitle(file)}
+                </motion.p>
+              </motion.div>
+            )
+          })}
         </div>
       </div>
-      {/* Title — only visible on focused card */}
-      <motion.p
-        className="text-center mt-3 text-sm font-medium text-white/90 tracking-wide"
-        animate={{ opacity: isFocused ? 1 : 0, y: isFocused ? 0 : 8 }}
-        transition={{ duration: 0.3 }}
-      >
-        {title}
-      </motion.p>
-    </motion.div>
+
+      {/* Dots */}
+      <div className="flex justify-center gap-2 mt-10">
+        {VIDEO_FILES.map((_, i) => (
+          <button
+            key={i}
+            onClick={() => goTo(i)}
+            className={`h-2 rounded-full transition-all duration-300 cursor-pointer
+              ${i === focused ? 'w-6 bg-blue-400' : 'w-2 bg-white/25 hover:bg-white/50'}`}
+            aria-label={`Go to slide ${i + 1}`}
+          />
+        ))}
+      </div>
+    </section>
   )
 }
 
-/* ================================================================
-   ARROW BUTTON
-   ================================================================ */
-function ArrowButton({ direction, onClick, disabled }) {
+function ArrowBtn({ dir, onClick, disabled }) {
   return (
     <button
       onClick={onClick}
@@ -124,181 +246,15 @@ function ArrowButton({ direction, onClick, disabled }) {
                   text-white/80 hover:bg-white/20 hover:text-white
                   transition-all duration-200 cursor-pointer
                   disabled:opacity-20 disabled:cursor-default
-                  ${direction === 'left' ? 'left-4 sm:left-8' : 'right-4 sm:right-8'}`}
-      aria-label={direction === 'left' ? 'Previous' : 'Next'}
+                  ${dir === 'left' ? 'left-3 sm:left-6' : 'right-3 sm:right-6'}`}
+      aria-label={dir === 'left' ? 'Previous' : 'Next'}
     >
       <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
-        {direction === 'left'
+        {dir === 'left'
           ? <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
           : <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
         }
       </svg>
     </button>
-  )
-}
-
-/* ================================================================
-   DOT INDICATORS
-   ================================================================ */
-function DotIndicators({ count, focusedIndex, onDotClick }) {
-  return (
-    <div className="flex justify-center gap-2 mt-8">
-      {Array.from({ length: count }).map((_, i) => (
-        <button
-          key={i}
-          onClick={() => onDotClick(i)}
-          className={`w-2 h-2 rounded-full transition-all duration-300 cursor-pointer
-            ${i === focusedIndex
-              ? 'bg-blue-400 w-6'
-              : 'bg-white/30 hover:bg-white/50'
-            }`}
-          aria-label={`Go to slide ${i + 1}`}
-        />
-      ))}
-    </div>
-  )
-}
-
-/* ================================================================
-   MAIN COVERFLOW COMPONENT
-   ================================================================ */
-export default function CoolVideoCoverflow() {
-  const [focusedIndex, setFocusedIndex] = useState(0)
-  const videoRefs = useRef([])
-  const containerRef = useRef(null)
-  const controls = useAnimation()
-  const dragStartX = useRef(0)
-  const count = VIDEO_FILES.length
-
-  // Calculate the x offset to center the focused card
-  const getTargetX = useCallback((idx) => {
-    // Each card occupies CARD_WIDTH + CARD_GAP
-    const slot = CARD_WIDTH + CARD_GAP
-    return -idx * slot
-  }, [])
-
-  // Animate track to center on focused card
-  useEffect(() => {
-    controls.start({ x: getTargetX(focusedIndex) }, SPRING)
-  }, [focusedIndex, controls, getTargetX])
-
-  // Video playback management: only focused video plays
-  useEffect(() => {
-    videoRefs.current.forEach((video, i) => {
-      if (!video) return
-      if (i === focusedIndex) {
-        video.play().catch(() => {})
-      } else {
-        video.pause()
-        video.currentTime = 0
-      }
-    })
-  }, [focusedIndex])
-
-  const goTo = useCallback((idx) => {
-    setFocusedIndex(Math.max(0, Math.min(count - 1, idx)))
-  }, [count])
-
-  const handleDragStart = useCallback((_, info) => {
-    dragStartX.current = info.point.x
-  }, [])
-
-  const handleDragEnd = useCallback((_, info) => {
-    const dx = info.point.x - dragStartX.current
-    const velocity = info.velocity.x
-    const threshold = CARD_WIDTH / 4
-
-    if (dx < -threshold || velocity < -300) {
-      goTo(focusedIndex + 1)
-    } else if (dx > threshold || velocity > 300) {
-      goTo(focusedIndex - 1)
-    } else {
-      // snap back
-      controls.start({ x: getTargetX(focusedIndex) }, SPRING)
-    }
-  }, [focusedIndex, goTo, controls, getTargetX])
-
-  // Keyboard support
-  useEffect(() => {
-    const handleKey = (e) => {
-      if (e.key === 'ArrowLeft') goTo(focusedIndex - 1)
-      if (e.key === 'ArrowRight') goTo(focusedIndex + 1)
-    }
-    window.addEventListener('keydown', handleKey)
-    return () => window.removeEventListener('keydown', handleKey)
-  }, [focusedIndex, goTo])
-
-  // Memoize video list to prevent re-renders
-  const cards = useMemo(() => VIDEO_FILES.map((file, i) => (
-    <CoverflowCard
-      key={file}
-      filename={file}
-      index={i}
-      focusedIndex={focusedIndex}
-      onClick={goTo}
-      videoRefs={videoRefs}
-    />
-  )), [focusedIndex, goTo])
-
-  return (
-    <section id="simulation" className="relative py-20 sm:py-28 bg-neutral-950 overflow-hidden">
-      {/* Section heading */}
-      <div className="max-w-5xl mx-auto px-6 mb-12 sm:mb-16">
-        <h2 className="text-2xl sm:text-3xl font-bold text-white mb-3">
-          Simulation Tasks
-        </h2>
-        <p className="text-neutral-400 text-sm sm:text-base">
-          10 manipulation tasks from the RoboTwin 2.0 benchmark — drag or click to explore.
-        </p>
-      </div>
-
-      {/* Coverflow viewport */}
-      <div
-        ref={containerRef}
-        className="relative w-full overflow-hidden"
-        style={{ perspective: 1200 }}
-      >
-        {/* Arrows */}
-        <ArrowButton
-          direction="left"
-          onClick={() => goTo(focusedIndex - 1)}
-          disabled={focusedIndex === 0}
-        />
-        <ArrowButton
-          direction="right"
-          onClick={() => goTo(focusedIndex + 1)}
-          disabled={focusedIndex === count - 1}
-        />
-
-        {/* Gradient fade edges */}
-        <div className="absolute inset-y-0 left-0 w-24 sm:w-40 bg-gradient-to-r from-neutral-950 to-transparent z-20 pointer-events-none" />
-        <div className="absolute inset-y-0 right-0 w-24 sm:w-40 bg-gradient-to-l from-neutral-950 to-transparent z-20 pointer-events-none" />
-
-        {/* Draggable track */}
-        <div className="flex justify-center">
-          <motion.div
-            className="flex items-center"
-            style={{
-              gap: CARD_GAP,
-              paddingLeft: '50%',
-              paddingRight: '50%',
-              marginLeft: -(CARD_WIDTH / 2),
-              transformStyle: 'preserve-3d',
-            }}
-            drag="x"
-            dragConstraints={{ left: -count * (CARD_WIDTH + CARD_GAP), right: 0 }}
-            dragElastic={0.1}
-            onDragStart={handleDragStart}
-            onDragEnd={handleDragEnd}
-            animate={controls}
-          >
-            {cards}
-          </motion.div>
-        </div>
-      </div>
-
-      {/* Dot indicators */}
-      <DotIndicators count={count} focusedIndex={focusedIndex} onDotClick={goTo} />
-    </section>
   )
 }
