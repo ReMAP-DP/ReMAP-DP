@@ -226,39 +226,81 @@ export default function MethodPipeline() {
   const [activeId, setActiveId] = useState(MODULES[0].id)
   const activeMod = MODULES.find((m) => m.id === activeId)
 
+  const projection = MODULES.find((m) => m.id === 'projection')
+  const semantic = MODULES.find((m) => m.id === 'semantic')
+  const geometric = MODULES.find((m) => m.id === 'geometric')
+  const fusion = MODULES.find((m) => m.id === 'fusion')
+  const diffusion = MODULES.find((m) => m.id === 'diffusion')
+
   return (
     <section id="method" className="py-16">
       <div className="max-w-5xl mx-auto px-6">
         <h2 className="text-2xl font-bold text-gray-900 mb-2 pb-2 border-b border-gray-200">
           Method Pipeline
         </h2>
-        <p className="text-gray-500 text-sm mb-8">
+        <p className="text-gray-500 text-sm mb-4">
           Hover or tap a module to explore the ReMAP-DP architecture.
         </p>
+
+        {/* Overview figure */}
+        <div className="mb-10">
+          <img
+            src={`${import.meta.env.BASE_URL}Method.png`}
+            alt="Overall architecture of ReMAP-DP"
+            className="w-full rounded-xl border border-gray-200 shadow-sm"
+          />
+          <p className="text-xs text-gray-500 mt-2 text-center">
+            Figure 2: Overall architecture of ReMAP-DP. (1) Multi-view projection generates aligned RGB and PointMaps. (2) Dual-stream encoder with transformer fusion. (3) Diffusion-based action generation.
+          </p>
+        </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
           {/* Left: Pipeline flowchart */}
           <div className="lg:col-span-2 flex flex-col">
-            {MODULES.map((mod, i) => {
-              const isActive = mod.id === activeId
-              const nextActive = i < MODULES.length - 1 && MODULES[i + 1].id === activeId
-              return (
-                <div key={mod.id}>
-                  <PipelineNode
-                    mod={mod}
-                    isActive={isActive}
-                    onHover={setActiveId}
-                    onClick={setActiveId}
-                  />
-                  {i < MODULES.length - 1 && (
-                    <ConnectorLine
-                      color={mod.color}
-                      isActive={isActive || nextActive}
-                    />
-                  )}
-                </div>
-              )
-            })}
+            {/* Step 1: Projection */}
+            <PipelineNode mod={projection} isActive={activeId === 'projection'} onHover={setActiveId} onClick={setActiveId} />
+
+            {/* Connector: projection → dual streams */}
+            <div className="flex justify-center py-1">
+              <div className={`w-0.5 h-5 rounded-full transition-colors duration-200 ${activeId === 'projection' || activeId === 'semantic' || activeId === 'geometric' ? 'bg-sky-400' : 'bg-gray-200'}`} />
+            </div>
+
+            {/* Step 2 & 3: Parallel dual streams */}
+            <div className="grid grid-cols-2 gap-3">
+              <PipelineNode mod={semantic} isActive={activeId === 'semantic'} onHover={setActiveId} onClick={setActiveId} />
+              <PipelineNode mod={geometric} isActive={activeId === 'geometric'} onHover={setActiveId} onClick={setActiveId} />
+            </div>
+
+            {/* Connector: dual streams → fusion (two lines merging) */}
+            <div className="flex justify-center py-1">
+              <svg className="w-full h-6" viewBox="0 0 200 24" fill="none" preserveAspectRatio="xMidYMid meet">
+                <path
+                  d="M 50 0 L 50 8 Q 50 12 54 14 L 100 20"
+                  stroke={activeId === 'semantic' || activeId === 'fusion' ? '#a78bfa' : '#e5e7eb'}
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  fill="none"
+                  className="transition-colors duration-200"
+                />
+                <path
+                  d="M 150 0 L 150 8 Q 150 12 146 14 L 100 20"
+                  stroke={activeId === 'geometric' || activeId === 'fusion' ? '#34d399' : '#e5e7eb'}
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  fill="none"
+                  className="transition-colors duration-200"
+                />
+              </svg>
+            </div>
+
+            {/* Step 4: Fusion */}
+            <PipelineNode mod={fusion} isActive={activeId === 'fusion'} onHover={setActiveId} onClick={setActiveId} />
+
+            {/* Connector: fusion → diffusion */}
+            <ConnectorLine color="amber" isActive={activeId === 'fusion' || activeId === 'diffusion'} />
+
+            {/* Step 5: Diffusion */}
+            <PipelineNode mod={diffusion} isActive={activeId === 'diffusion'} onHover={setActiveId} onClick={setActiveId} />
           </div>
 
           {/* Right: Detail panel */}
