@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import SimulationGallery from './SimulationGallery'
+import CoolVideoCoverflow from './CoolVideoCoverflow'
 
 const NAV_ITEMS = ['Abstract', 'Simulation', 'Results', 'BibTeX']
 
