@@ -27,7 +27,7 @@ function parseTitle(filename) {
 /* ================================================================
    CONFIG
    ================================================================ */
-const CARD_W = 520
+const CARD_W = 640
 const CARD_SPACING = 280 // center-to-center distance for side cards (tighter overlap)
 const SPRING = { type: 'spring', stiffness: 260, damping: 28 }
 
@@ -40,7 +40,7 @@ function getCardTransform(offset) {
   }
 
   return {
-    scale: Math.max(0.45, 0.72 - (abs - 1) * 0.1),
+    scale: Math.max(0.45, 0.66 - (abs - 1) * 0.1),
     rotateY: -sign * Math.min(abs * 30, 55),
     opacity: Math.max(0.2, 0.85 - abs * 0.2),
   }
