@@ -3,7 +3,7 @@ import CoolVideoCoverflow from './CoolVideoCoverflow'
 import RealWorldGallery from './RealWorldGallery'
 import MethodPipeline from './MethodPipeline'
 
-const NAV_ITEMS = ['Abstract', 'Simulation', 'Real-World', 'Results', 'BibTeX']
+const NAV_ITEMS = ['Abstract', 'Method', 'Simulation', 'Real-World', 'Results', 'BibTeX']
 
 function Navbar() {
   const [open, setOpen] = useState(false)
@@ -517,6 +517,7 @@ function App() {
       <main>
         <Hero />
         <Abstract />
+        <MethodPipeline />
         <CoolVideoCoverflow />
         <RealWorldGallery />
         <Results />
