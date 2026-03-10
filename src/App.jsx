@@ -8,7 +8,7 @@ function Navbar() {
   const [open, setOpen] = useState(false)
 
   const scrollTo = (id) => {
-    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
+    document.getElementById(id.toLowerCase().replace(/-/g, ''))?.scrollIntoView({ behavior: 'smooth' })
     setOpen(false)
   }
 
