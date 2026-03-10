@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import CoolVideoCoverflow from './CoolVideoCoverflow'
 import RealWorldGallery from './RealWorldGallery'
+import MethodPipeline from './MethodPipeline'
 
 const NAV_ITEMS = ['Abstract', 'Simulation', 'Real-World', 'Results', 'BibTeX']
 
