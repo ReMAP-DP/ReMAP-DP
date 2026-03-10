@@ -77,14 +77,16 @@ function SectionHeading({ children }) {
 
 {/* ================================================================
     AUTHORS & AFFILIATIONS — edit here
+    equalContribution: true  → adds * (equal contribution)
+    corresponding: true      → adds † (corresponding author)
    ================================================================ */}
 const AUTHORS = [
   // { name: 'First Last', superscript: '1' },
-  { name: 'XinZhang Yang', superscript: '1' },
-  { name: 'Renjun Wu', superscript: '1' },
+  { name: 'XinZhang Yang', superscript: '1', equalContribution: true },
+  { name: 'Renjun Wu', superscript: '1', equalContribution: true },
   { name: 'Hellen Ma', superscript: '2' },
   { name: 'Jinyan Liu', superscript: '1' },
-  { name: 'Xuesong Li', superscript: '1' },
+  { name: 'Xuesong Li', superscript: '1', corresponding: true },
 ]
 
 const AFFILIATIONS = [
