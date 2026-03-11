@@ -84,16 +84,17 @@ function SectionHeading({ children }) {
    ================================================================ */}
 const AUTHORS = [
   // { name: 'First Last', superscript: '1' },
-  { name: 'XinZhang Yang', superscript: '1', corresponding: true, equalContribution: true  },
-  { name: 'Renjun Wu', superscript: '1', corresponding: true, equalContribution: true  },
-  { name: 'Hellen Ma', superscript: '2' , corresponding: true, equalContribution: true },
-  { name: 'Jinyan Liu', superscript: '1' , corresponding: true, equalContribution: true },
-  { name: 'Xuesong Li', superscript: '1', corresponding: true, equalContribution: true },
+  // { name: 'XinZhang Yang', superscript: '1', corresponding: true, equalContribution: true  },
+  // { name: 'Renjun Wu', superscript: '1', corresponding: true, equalContribution: true  },
+  // { name: 'Hellen Ma', superscript: '2' , corresponding: true, equalContribution: true },
+  // { name: 'Jinyan Liu', superscript: '1' , corresponding: true, equalContribution: true },
+  // { name: 'Xuesong Li', superscript: '1', corresponding: true, equalContribution: true },
+  {name: 'Anonymous Authors'}
 ]
 
 const AFFILIATIONS = [
-  { id: '1', text: 'School of Computer Science and Technology, Beijing Institute of Technology' },
-  { id: '2', text: 'The Hong Kong University of Science and Technology (HKUST)'}
+  // { id: '1', text: 'School of Computer Science and Technology, Beijing Institute of Technology' },
+  // { id: '2', text: 'The Hong Kong University of Science and Technology (HKUST)'}
 ]
 {/* ================================================================ */}
 
@@ -138,9 +139,9 @@ function Hero() {
         {/* <p className="mt-2 text-xs text-white/40">
           * Equal contribution &nbsp;&nbsp; &dagger; Corresponding author
         </p> */}
-        <p className="mt-2 text-xs text-white/40">
+        {/* <p className="mt-2 text-xs text-white/40">
             &dagger; Corresponding author
-        </p>
+        </p> */}
 
         {/* ---------- Affiliations ---------- */}
         {AFFILIATIONS.length > 0 && (
