@@ -463,7 +463,7 @@ function BibTeX() {
   title     = {ReMAP-DP: Reprojected Multi-view Aligned
                PointMaps for Diffusion Policy},
   author    = {Anonymous Authors},
-  booktitle = { IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS)},
+  booktitle = { arxiv},
   year      = {2026}
 }`
 
