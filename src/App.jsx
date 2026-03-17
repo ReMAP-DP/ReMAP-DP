@@ -459,12 +459,14 @@ function Results() {
 function BibTeX() {
   const [copied, setCopied] = useState(false)
 
-  const bibtex = `@inproceedings{remapdp2025,
-  title     = {ReMAP-DP: Reprojected Multi-view Aligned
-               PointMaps for Diffusion Policy},
-  author    = {Anonymous Authors},
-  booktitle = { arxiv},
-  year      = {2026}
+  const bibtex = `@misc{yang2026remapdpreprojectedmultiviewaligned,
+      title={ReMAP-DP: Reprojected Multi-view Aligned PointMaps for Diffusion Policy}, 
+      author={Xinzhang Yang and Renjun Wu and Jinyan Liu and Xuesong Li},
+      year={2026},
+      eprint={2603.14977},
+      archivePrefix={arXiv},
+      primaryClass={cs.RO},
+      url={https://arxiv.org/abs/2603.14977}, 
 }`
 
   const handleCopy = () => {
