@@ -438,7 +438,7 @@ function Results() {
             </table>
           </div>
           <p className="text-sm text-gray-500 mt-3">
-            Table III: Real-world success rates across 10 trials. ReMAP-DP achieves 46.7% average, substantially outperforming DP (31.7%) and DP3 (11.7%).
+            Table III: Real-world success rates across 10 trials. ReMAP-DP achieves 46.7% average, substantially outperforming DP3 (31.7%) and DP (11.7%).
           </p>
         </div>
 
