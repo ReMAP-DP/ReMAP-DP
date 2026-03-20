@@ -160,7 +160,7 @@ function Hero() {
         <div className="mt-8 sm:mt-10 flex flex-wrap justify-center gap-3 sm:gap-4">
           {/* Paper (arXiv) */}
           <a
-            href="#"
+            href="https://arxiv.org/abs/2603.14977"
             className="group inline-flex items-center gap-2.5 px-6 py-3 rounded-xl
                        bg-white/10 backdrop-blur-lg border border-white/20
                        text-white text-sm font-medium
@@ -177,7 +177,7 @@ function Hero() {
 
           {/* Code (GitHub) */}
           <a
-            href="#"
+            href="https://github.com/ICR-Lab/ReMAP-DP"
             className="group inline-flex items-center gap-2.5 px-6 py-3 rounded-xl
                        bg-white/10 backdrop-blur-lg border border-white/20
                        text-white text-sm font-medium
@@ -192,9 +192,9 @@ function Hero() {
             Code (GitHub)
           </a>
 
-          {/* Data */}
+          {/* Model */}
           <a
-            href="#"
+            href="https://huggingface.co/ICR-Lab/ReMAP-DP"
             className="group inline-flex items-center gap-2.5 px-6 py-3 rounded-xl
                        bg-white/10 backdrop-blur-lg border border-white/20
                        text-white text-sm font-medium
@@ -206,7 +206,7 @@ function Hero() {
             <svg className="w-5 h-5 opacity-80 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" strokeWidth={1.8} viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" d="M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375m16.5 0v3.75m-16.5-3.75v3.75m16.5 0v3.75C20.25 16.153 16.556 18 12 18s-8.25-1.847-8.25-4.125v-3.75m16.5 0c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125" />
             </svg>
-            Data
+            Model
           </a>
         </div>
       </div>
